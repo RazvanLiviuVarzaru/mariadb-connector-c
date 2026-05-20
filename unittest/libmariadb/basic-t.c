@@ -30,6 +30,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "my_test.h"
 #include "ma_common.h"
 
+#include <limits.h>
+
+static void trigger_ubsan_signed_overflow(void)
+{
+  volatile int value= INT_MAX;
+
+  /* Intentionally trigger UBSAN in the test-ubsan branch. */
+  (void)(value + 1);
+}
+
 static int test_conc75(MYSQL *my)
 {
   int rc;
@@ -874,6 +884,8 @@ int main(int argc, char **argv)
 {
   if (argc > 1)
     get_options(argc, argv);
+
+  trigger_ubsan_signed_overflow();
 
   get_envvars();
 
